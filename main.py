@@ -49,10 +49,89 @@ def isIn(x):
 # вектор градиента
 def grad(x, n):
     # h — приращение
-    h = 0.0001
+    h = 0.01
     x1 = x[0]
     x2 = x[1]
     # поиск производной
     y1 = (foo(x1 + h, x2, n) - foo(x1 - h, x2, n)) / (h * 2)
     y2 = (foo(x1, x2 + h, n) - foo(x1, x2 - h, n)) / (h * 2)
     return [y1, y2]
+
+
+def interior_penalty(e):
+
+    def R(x1, x2):
+        return foo(x1, x2) + 1 / k * (1 / f1([x1, x2]) + 1 /k* f2([x1, x2]))
+
+    def gradR(x1, x2):
+        h = 0.001
+        return [(R(x1 + h, x2) - R(x1 - h, x2)) / (h * 2), (R(x1, x2 + h) - R(x1, x2 - h)) / (h * 2)]
+
+    def gradient(x):
+        xx = [x[0], x[1], x[2]]
+        h = 0.5
+        gradvectR = gradR(xx[0], xx[1])
+        while pow(gradvectR[0] + gradvectR[1], 2) > e:
+            xx[0] = xx[0] - h * gradvectR[0]
+            xx[1] = xx[1] - h * gradvectR[1]
+            gradvectR = gradR(xx[0], xx[1])
+        xx[2] = foo(xx[0], xx[1])
+        return xx
+
+    x_list = []
+    k = 10
+    c = 10
+    x = [random.randint(-100, 100), random.randint(-100, 100), 0]
+
+    while not isIn(x):
+        x = [random.randint(-100, 100), random.randint(-100, 100), 0]
+        print("yay ", x)
+
+    x[2] = foo(x[0], x[1])
+    print("Initial x: ", x)
+    xn = gradient(x)
+
+    while abs(x[2] - xn[2]) > e:
+        k *= c
+        x = [xn[0], xn[1], xn[2]]
+        x_list.append(x)
+        xn = gradient(x)
+    if (len(x_list) > 0):
+        x_list.pop()
+        x = x_list[len(x_list) - 1]
+
+    return x, x_list
+
+
+e = 0.000001
+_x, _x_list = interior_penalty(e)
+for i in range(len(_x_list)):
+    print(i + 1, ". x1: ", _x_list[i][0], " x2: ", _x_list[i][1], " y: ", _x_list[i][2], " k: ", pow(10, i))
+print("Solution: ", _x[0], " ", _x[1])
+
+levels = [-0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.10, -0.05, -0.01, 0.0, 0.01, 0.05, 0.10, 0.20, 0.30, 0.4,
+          0.5, 0.6, 0.7, 0.8, 0.9]
+xg1 = np.arange(-5, 10.250, 0.250)
+xg2 = np.arange(-5, 10.250, 0.250)
+xg1, xg2 = np.meshgrid(xg1, xg2)
+f2 = np.vectorize(fooA)
+yg = f2(xg1, xg2)
+
+x1i = np.linspace(0, 0, 100)
+x2i = np.linspace(-5, 10.250, 100)
+plt.plot(x1i, x2i, color="blue")
+
+x11j, x22j = -5, -5
+x1j, x2j = [], []
+for i in range(100):
+    x22j = x11j * x11j * 4
+    if (x22j > 10):
+        x22j = 10
+    x1j.append(x11j)
+    x2j.append(x22j)
+    x11j += 0.1525
+plt.plot(x1j, x2j, color="green")
+
+cont = plt.contour(xg1, xg2, yg, levels=30)
+plt.plot(_x[0], _x[1], color="red", marker=".")
+plt.show()

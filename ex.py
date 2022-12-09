@@ -5,11 +5,11 @@ import random
 
 
 def f(x1, x2):
-    a = 1
-    b = 1
+    a = -2
+    b = -1
     c = 1
-    d = 3
-    alf = 120
+    d = 2
+    alf = 60
     return (pow(((x1 - a) * cos(alf) + (x2 - b) * sin(alf)), 2)) / (c * c) + \
            (pow(((x2 - b) * cos(alf) - (x1 - a) * sin(alf)), 2)) / (d * d)
 
@@ -49,7 +49,7 @@ def interior_penalty(e):
 
     def gradient(x):
         xx = [x[0], x[1], x[2]]
-        h = 0.01
+        h = 0.1
         gradvectR = gradR(xx[0], xx[1])
         while pow(gradvectR[0] + gradvectR[1], 2) > e:
             xx[0] = xx[0] - h * gradvectR[0]
