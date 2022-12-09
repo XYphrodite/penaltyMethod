@@ -61,7 +61,7 @@ def grad(x, n):
 def interior_penalty(e):
 
     def R(x1, x2):
-        return foo(x1, x2) + 1 / k * (1 / f1([x1, x2]) + 1 /k* f2([x1, x2]))
+        return foo(x1, x2) + 1 / k * (1 / f1([x1, x2]) + 1 / k * f2([x1, x2]))
 
     def gradR(x1, x2):
         h = 0.001
