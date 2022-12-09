@@ -5,21 +5,21 @@ import random
 
 
 def f(x1, x2):
-    a = 0
-    b = 0
+    a = -3
+    b = -1
     c = 1
-    d = 2
-    alf = 45
+    d = 3
+    alf = 130
     return (pow(((x1 - a) * cos(alf) + (x2 - b) * sin(alf)), 2)) / (c * c) + \
            (pow(((x2 - b) * cos(alf) - (x1 - a) * sin(alf)), 2)) / (d * d)
 
 
 def con1(x1, x2):
-    return x1 * x2 + 54
+    return pow(x1, 2) + 2 * x2
 
 
 def con2(x1, x2):
-    return 3 * x1 + x2 - 6
+    return x2 - x1
 
 
 def in_constraints(X):
@@ -27,12 +27,6 @@ def in_constraints(X):
         return True
     else:
         return False
-
-
-def grad(x1, x2):
-    # gradient vector
-    h = 0.0001
-    return [(f(x1 + h, x2) - f(x1 - h, x2)) / (h * 2), (f(x1, x2 + h) - f(x1, x2 - h)) / (h * 2)]
 
 
 def interior_penalty(e):
@@ -45,10 +39,10 @@ def interior_penalty(e):
 
     def gradient(xi):
         xx = xi.copy()
-        h = 0.005
+        h = 1
         gradvectR = gradR(xx[0], xx[1])
         N = 0
-        while pow(gradvectR[0] + gradvectR[1], 2) > e and N<1000:
+        while pow(gradvectR[0] + gradvectR[1], 2) > e and N < 1000:
             xx[0] = xx[0] - h * gradvectR[0]
             xx[1] = xx[1] - h * gradvectR[1]
             gradvectR = gradR(xx[0], xx[1])
@@ -60,12 +54,16 @@ def interior_penalty(e):
 
     x_list = []
     k = 1
-    c = 0.2
-    x1 = random.randint(-30, 30)
-    x2 = 6 - 3 * x1
+    c = 0.5
+    randy = 100
+    x1 = random.randint(-randy, randy)
+    x2 = random.randint(-randy, randy)
+    '''
     while not in_constraints([x1, x2]):
-        x1 = random.randint(-30, 30)
+        x1 = random.randint(-randy, randy)
         x2 = 6 - 3 * x1
+        print('wver')
+        '''
     x = [x1, x2, 0]
     # x = [1, 1, 0]
 
